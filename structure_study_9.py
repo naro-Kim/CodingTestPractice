@@ -18,86 +18,86 @@
 
 """
 
-
 class Node:
 
-	def __init__(self, item):
-		self.data = item
-		self.next = None
+    def __init__(self, item):
+        self.data = item
+        self.next = None
 
 
 class LinkedList:
 
-	def __init__(self):
-		self.nodeCount = 0
-		self.head = Node(None) # Dummy node init
-		self.tail = None
-		self.head.next = self.tail
+    def __init__(self):
+        self.nodeCount = 0
+        self.head = Node(None)
+        self.tail = None
+        self.head.next = self.tail
 
 
-	def __repr__(self):
-		if self.nodeCount == 0:
-			return 'LinkedList: empty'
-
-		s = ''
-		curr = self.head
-		while curr.next:
-			curr = curr.next
-			s += repr(curr.data)
-			if curr.next is not None:
-				s += ' -> '
-		return s
+    def traverse(self):
+        result = []
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+            result.append(curr.data)
+        return result
 
 
-	def getLength(self):
-		return self.nodeCount
+    def getAt(self, pos):
+        if pos < 0 or pos > self.nodeCount:
+            return None
+
+        i = 0
+        curr = self.head
+        while i < pos:
+            curr = curr.next
+            i += 1
+
+        return curr
 
 
-	def traverse(self):
-		result = []
-		curr = self.head
-		while curr.next: # curr.next 링크가 있다면 반복
-			curr = curr.next
-			result.append(curr.data)
-		return result
+    def insertAfter(self, prev, newNode):
+        newNode.next = prev.next
+        if prev.next is None:
+            self.tail = newNode
+        prev.next = newNode
+        self.nodeCount += 1
+        return True
 
 
-	def getAt(self, pos):
-		if pos < 0 or pos > self.nodeCount: # 인덱스 0이 생기면서 pos 대조 조건이 바뀜
-			return None
+    def insertAt(self, pos, newNode):
+        if pos < 1 or pos > self.nodeCount + 1:
+            return False
 
-		i = 0
-		curr = self.head
-		while i < pos:
-			curr = curr.next
-			i += 1
+        if pos != 1 and pos == self.nodeCount + 1:
+            prev = self.tail
+        else:
+            prev = self.getAt(pos - 1)
+        return self.insertAfter(prev, newNode)
 
-		return curr # pos ==0 이면 self[0]번째 노드 리턴
 
-    # prevNode 다음에 노드 삽입 메소드
-	def insertAfter(self, prev, newNode):
-		newNode.next = prev.next
-		if prev.next is None: # 마지막 노드 삽입의 경우
-			self.tail = newNode
-		prev.next = newNode
-		self.nodeCount += 1
-		return True
+    def popAfter(self, prev):
+        #prev가 마지막 노드인 경우
+        if prev.next is None: # prev == self.tail
+            return None 
 
-    # 지정한 pos에 노드 삽입 메소드
-	def insertAt(self, pos, newNode):
-		if pos < 1 or pos > self.nodeCount + 1:
-			return False
+        # prev가 마지막 노드가 아닌경우
+        cur = prev.next
+        prev.next = cur.next # cur.next가 존재하는 경우와 존재하지 않는 경우 모두를 포함함
+        #cur이 마지막 노드인 경우
+        if cur.next == None:
+            self.tail = prev
 
-		if pos != 1 and pos == self.nodeCount + 1:
-			prev = self.tail 
-            # pos=1이면서 pos== nCnt+1이면 빈 리스트에 삽입하는 것이되어 tail을 설정하면 안됨
-		else:
-			prev = self.getAt(pos - 1)
-		return self.insertAfter(prev, newNode) 
+        self.nodeCount -= 1
+        return cur.data
 
-	def concat(self, L):
-		self.tail.next = L.head.next
-		if L.tail:
-			self.tail = L.tail
-		self.nodeCount += L.nodeCount
-    
+    def popAt(self, pos):
+        if pos < 1 or pos > self.nodeCount+1:
+            raise IndexError
+        else:
+            prev = self.getAt(pos-1)
+            return self.popAfter(prev)
+
+
+def solution(x):
+    return 0
