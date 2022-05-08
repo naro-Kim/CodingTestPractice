@@ -70,6 +70,13 @@ class DoublyLinkedList:
         next = self.getAt(pos)
         return self.insertBefore(next, newNode) 
         
+    def getLength(self):
+        len = 0
+        cur = self.head
+        while(cur.next.next):
+            cur = cur.next
+            len += 1
+        return len
 
     # 효율성을 위하여 이진 탐색처럼 search 범위를 나눔
     def getAt(self, pos):
