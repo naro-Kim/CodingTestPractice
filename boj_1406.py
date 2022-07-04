@@ -14,49 +14,39 @@
 # 
 # 프로그램 동작
 #   1. 원래 입력받은 문자열 str과 커서를 대조하여 L과 D의 연산 조건을 비교한다.
-#   2. 커서는 dq[-1]로 시작한다
-#  
-# 출력 
- 
-import time 
+#   2. 커서를 할당하기 보다, 덱의 저장과 입출력을 잘 살펴보자.
+#   3. 출력 시, deque는 스택처럼 출력할 것임 FIFO
 
-start_time = time.time()
 
 from collections import deque
-
 import sys
 input = sys.stdin.readline
 
-n = input()
-m = int(input())
-print(m)
 
-dq = deque(n)
-ans_dq = deque()
-cur = dq[-1]
+dq = deque(input().strip())
+r_dq = deque()
+m = int(input())  
+
+# len(dq)는 커서 좌측 데이터의 갯수이다
+# len(tmp_dq)는 커서 우측 데이터의 갯수이다
 
 for i in range(m):
     cmd = input().strip()
     if cmd[0] == 'L':
-        if cur != dq[0]:
-            ans_dq.append(dq.popleft())
-            print('L 실행')
-            cur = dq[0]
+        if len(dq) > 0:
+            r_dq.append(dq.pop()) 
     elif cmd[0] == 'D':
-        if cur != dq[-1]:
-     
-            print('D 실행')
+        if len(r_dq) > 0:
+            dq.append(r_dq.pop()) 
     elif cmd[0] == 'B':
-        if len(right_dq) > 1:
-            left_dq.pop()
-        print('B 실행')
+        if len(dq)>0:
+            dq.pop() 
     elif cmd[0] == 'P':
-        ans_dq.appendleft()
-        print('C 실행, cmd[2] :', cmd[2])
-        
+        dq.append(cmd[2])  
 
-for i in range(len(left_dq)-1):
-    print(left_dq[i], end="")
+r_dq.reverse()
+dq += r_dq
+# dq += r_dq 과같이 concatenation으로도 쓸 수 있지만, splice 사용을 권장하고 있다.
 
-end_time = time.time()
-print('걸린 시간 : ', end_time - start_time)
+while len(dq):
+    print(dq.popleft(), end="")
