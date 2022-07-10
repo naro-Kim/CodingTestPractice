@@ -37,3 +37,17 @@ col2 = []
 col3 = []
 hanoi(n,col1,col2,col3)
 """
+
+def hanoi(n, start, sub, dest): 
+    if(n==1):
+        print(start, dest)
+    else:
+        hanoi(n-1, start, dest, sub)
+        print(start, dest)
+        hanoi(n-1, sub, start, dest)
+
+n = int(input())
+sum = 2**n-1
+
+print(sum)
+hanoi(n,1,2,3)
