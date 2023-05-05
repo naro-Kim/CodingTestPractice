@@ -3,7 +3,6 @@ import heapq as hq
 def solution(op):
         q = []
         for i in op:
-            print(q)
             ins, num = i.strip().split() 
             if ins == 'I':
                 hq.heappush(q, int(num))
