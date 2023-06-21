@@ -1,22 +1,19 @@
-def solution(tickets):
-    tickets.sort(reverse=True) # 정렬
-    path = {}
-
-    for dep, arr in tickets:
-        if dep in path:
-            path[dep].append(arr)
-        else:
-            path[dep] = [arr]
-    
-    st = ['ICN']
-    ans = []
-    
+def DFS_ST(d, st): 
+    path = []
     while st:
         dep = st[-1]
+        if dep not in d or len(d[dep]) == 0:
+            path.append(st.pop())
+        else:
+            st.append(d[dep].pop(0))
+    return path[::-1]
 
-        if dep not in path or len(path[dep])==0:
-            ans.append(st.pop())
-        else: 
-            st.append(path[dep].pop())
+def solution(tickets):
+    d = {} 
+    for dep,arr in tickets:
+        d.setdefault(dep, set()).add(arr) 
 
-    return ans[::-1]
+    for key in d:
+        d[key] = sorted(d[key]) 
+    
+    return DFS_ST(d, st=["ICN"])
