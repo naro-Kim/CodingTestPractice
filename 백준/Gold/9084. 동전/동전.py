@@ -12,8 +12,7 @@ for _ in range(t):
     memo[0] = 1 # 금액 범위 1~10000 초기화
 
     for coin in coins:
-        for i in range(m + 1):
-            if i >= coin:
+        for i in range(coin, m + 1):
                 memo[i] += memo[i - coin]
 
     print(memo[m])
