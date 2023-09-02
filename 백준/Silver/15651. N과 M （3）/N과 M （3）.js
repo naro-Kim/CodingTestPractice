@@ -8,7 +8,7 @@ const [n, m] = require('fs')
   .readFileSync('/dev/stdin')
   .toString() 
   .split(' ')
-  .map(Number);
+  .map((a)=>+a);
 
 function solution(n, m) {
     const seq = new Array(m).fill(0);
