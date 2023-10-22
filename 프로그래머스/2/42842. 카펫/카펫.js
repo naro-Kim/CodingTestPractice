@@ -1,11 +1,12 @@
-function solution(brown, yellow) {
-  for (let width = 1; width <= yellow; width++) {
-    if (yellow % width === 0) {
-      const height = yellow / width;
-      const brownArea = 2 * (width + height) + 4; // Brown area
-      if (brownArea === brown) {
-        return [height + 2, width + 2];
-      }
+const getDivisors = (num) => {
+    const divisors = [];
+    for(let i = 1 ; i <= num ; i++){
+        if(num % i === 0) divisors.push(i);
     }
-  }
+    return divisors;
+}
+
+function solution(brown, yellow) {
+    let answer = getDivisors(brown+yellow);
+    return answer;
 }
