@@ -1,105 +1,73 @@
-class Queue {
-  constructor() {
-    this.storage = {};
-    this.front = 0;
-    this.rear = 0;
-  }
-
-  isEmpty(){
-    return this.size() === 0;
-  }
-  
-  size() {
-    if (this.storage[this.front] === undefined) return 0;
-    else return this.rear - this.front + 1;
-  }
-
-  add(value) {
-    if (this.size() === 0) this.storage["0"] = value;
-    else {
-      this.rear++;
-      this.storage[this.rear] = value;
-    }
-  }
-
-  popleft() {
-    let tmp;
-    tmp = this.storage[this.front];
-    delete this.storage[this.front];
-    if (this.front === this.rear) {
-      this.front = 0;
-      this.rear = 0;
-    } else {
-      this.front++;
-    }
-    return tmp;
-  }
-}
-
-let map = require("fs")
+let input = require("fs")
   .readFileSync("dev/stdin")
   .toString()
   .trim()
   .split("\n")
-  .map((v) => v.split(""));
- 
-const dx = [-1, 1, 0, 0];
-const dy = [0, 0, -1, 1];
-const combX = new Array(25);
-const combY = new Array(25);
-const visited = new Array(7).fill(false);
+  .map((e) => e.split(""));
 let ans = 0;
+let usedRoom = new Array(25).fill(0);
+let tmp = [];
+let dr = [-1, 0, 1, 0];
+let dc = [0, 1, 0, -1]; 
+check();
+console.log(ans);
 
-for (let i = 0; i < 25; i++) {
-  combX[i] = i % 5;
-  combY[i] = Math.floor(i / 5);
-}
-
-function combination(comb, idx, depth, left) {
-  if (left === 0) {
-    bfs(comb);
+function check(n = 0, r, c, y = 0) {
+  if (y == 4) return;
+  if (n == 7) {
+    let cnt = dfs(tmp[0]);
+    setUsedRoomByTmp();
+    if (cnt == 7) {
+      ans++;
+    }
     return;
   }
-
-  if (depth === 25) return;
-
-  comb[idx] = depth;
-  combination(comb, idx + 1, depth + 1, left - 1); // 선택한 경우
-  combination(comb, idx, depth + 1, left); // 선택하지 않은 경우
-}
-
-function bfs(comb) {
-  const queue = [];
-  visited.fill(false);
-
-  visited[0] = true;
-  queue.push(comb[0]);
-  let cnt = 1;
-  let sCnt = 0;
-
-  while (queue.length > 0) {
-    const cur = queue.shift();
-    if (map[combY[cur]][combX[cur]] === 'S') sCnt++;
-
-    for (let i = 0; i < 4; i++) {
-      for (let next = 1; next < 7; next++) {
-        if (
-          !visited[next] &&
-          combX[cur] + dx[i] === combX[comb[next]] &&
-          combY[cur] + dy[i] === combY[comb[next]]
-        ) {
-          visited[next] = true;
-          queue.push(comb[next]);
-          cnt++;
-        }
+  if (n == 0) {
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        usedRoom[i * 5 + j] = 1;
+        tmp[n] = i * 5 + j;
+        if (input[i][j] == "Y") check(1, i, j, 1);
+        else check(1, i, j, 0);
+        usedRoom[i * 5 + j] = 0;
+        tmp.length = 0;
+      }
+    }
+  } else {
+    for (let i = r; i < 5; i++) {
+      for (let j = i == r ? c + 1 : 0; j < 5; j++) {
+        usedRoom[i * 5 + j] = 1;
+        tmp[n] = i * 5 + j;
+        if (input[i][j] == "Y") {
+          check(n + 1, i, j, y + 1);
+        } else check(n + 1, i, j, y);
+        usedRoom[i * 5 + j] = 0;
+        tmp.length = n;
       }
     }
   }
-
-  if (cnt === 7 && sCnt >= 4) {
-    ans++;
-  }
 }
 
-combination(new Array(7), 0, 0, 7);
-console.log(ans);
+function dfs(dn) {
+  let nr,
+    nc,
+    tr,
+    tc,
+    cnt = 1;
+  usedRoom[dn] = 0;
+  nr = Math.floor(dn / 5);
+  nc = dn % 5;
+  for (let d = 0; d < 4; d++) {
+    tr = nr + dr[d];
+    tc = nc + dc[d];
+    if (0 <= tr && tr < 5 && 0 <= tc && tc < 5 && usedRoom[tr * 5 + tc] == 1)
+      cnt += dfs(tr * 5 + tc);
+  }
+  return cnt;
+}
+
+function setUsedRoomByTmp() {
+  for (let i = 0; i < 7; i++) {
+    usedRoom[tmp[i]] = 1;
+  }
+}
