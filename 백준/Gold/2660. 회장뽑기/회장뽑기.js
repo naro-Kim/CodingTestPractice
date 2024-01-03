@@ -5,18 +5,14 @@ let [N, ...relation] = require("fs")
   .split("\n")
   .map((v) => v.split(" ").map((v) => +v));
 
-relation.pop();
 N = +N;
 
-let ans = "";
-let score = 0;
-let candidates = [];
+const mat = Array.from({ length: N }, () => new Array(N).fill(1e2));
+const ans = [];
 
-const mat = Array.from({ length: N }, () => new Array(N).fill(Infinity));
-
-for (let i = 0; i < relation.length; i++) {
+for (let i = 0; i < relation.length - 1; i++) {
   const [a, b] = relation[i];
-  mat[a - 1][b - 1] = mat[b - 1][a - 1] = 1;
+  mat[a-1][b-1] = mat[b-1][a-1] = 1;
 }
 
 for (let k = 0; k < N; k++) {
@@ -31,21 +27,20 @@ for (let i = 0; i < N; i++) {
   mat[i][i] = 0;
 }
 
-let min = Infinity;
-for (let i = 0; i < N; i++) {
-  let tmp = Math.max(...mat[i]);
-  if (tmp < min) {
-    min = tmp;
-  }
-}
-score = min;
+let result = [];
+let score = 100;
 
 for (let i = 0; i < N; i++) {
-  let tmp = Math.max(...mat[i]);
-  if (tmp === score) {
-    candidates.push(i + 1);
-  }
+  const tmpMax = Math.max(...mat[i]);
+  ans.push(tmpMax);
+  score = Math.min(score, tmpMax);
 }
 
-console.log(score, candidates.length);
-console.log(candidates.join(' '));
+ans.map((x, idx) => {
+  if (x === score) {
+    result.push(idx + 1);
+  }
+});
+
+console.log(score, result.length);
+console.log(result.join(" "));
