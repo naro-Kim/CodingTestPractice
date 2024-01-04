@@ -1,3 +1,24 @@
+class Deque {
+  constructor() {
+    this.data = [];
+    this.head = 0;
+    this.tail = 0;
+  }
+
+  popLeft() {
+    if (this.head >= this.tail) return null;
+    else return this.data[this.head++];
+  }
+
+  append(item) {
+    this.data[this.tail++] = item;
+  }
+
+  size() {
+    return this.tail - this.head;
+  }
+}
+
 const [NM, ...relation] = require("fs")
   .readFileSync("dev/stdin")
   .toString()
@@ -6,37 +27,38 @@ const [NM, ...relation] = require("fs")
   .map((v) => v.split(" ").map((v) => +v));
 
 const [N, M] = NM;
-const mat = Array.from({ length: N }, () => new Array(N).fill(Infinity));
+const graph = Array.from({ length: N }, () => []);
 
 for (const [a, b] of relation) {
-  mat[a - 1][b - 1] = mat[b - 1][a - 1] = 1;
-}
-
-for (let k = 0; k < N; k++) {
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < N; j++) {
-      mat[i][j] = Math.min(mat[i][j], mat[i][k] + mat[k][j]);
-    }
-  }
-}
-
-for (let i = 0; i < N; i++) {
-  mat[i][i] = 0;
+  graph[a - 1].push(b - 1);
+  graph[b - 1].push(a - 1);
 }
 
 const sum = [];
-for (const line of mat) {
-  sum.push(line.reduce((acc, cur) => acc + cur, 0));
-}
-
-let min = sum[0];
+let min = Infinity;
 let idx = 0;
 
-for (let i = 1; i < N; i++) {
+const bfs = (start) => {
+  const visited = Array.from({ length: N }, () => 0);
+  const q = new Deque();
+  q.append(start);
+  while (q.size()) {
+    const node = q.popLeft();
+    for (const next of graph[node]) {
+      if (!visited[next]) {
+        visited[next] = visited[node] + 1;
+        q.append(next);
+      }
+    }
+  }
+  return visited.reduce((a, c) => a + c, 0);
+};
+
+for (let i = 0; i < N; i++) {
+  sum.push(bfs(i));
   if (min > sum[i]) {
     min = sum[i];
     idx = i;
   }
 }
-
 console.log(idx + 1);
