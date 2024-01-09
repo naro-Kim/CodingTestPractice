@@ -1,3 +1,1 @@
-function solution(s) { 
-    return s.split(" ").map((v)=> v.slice(0,1).toUpperCase() + v.slice(1,v.length).toLowerCase()).join(' ');
-}
+const solution = (s) => s.split(" ").map((v)=> v.slice(0,1).toUpperCase() + v.slice(1,v.length).toLowerCase()).join(' ');
