@@ -7,7 +7,7 @@ function solution(arr) {
     
     for(let i=2; i < arr.length; i++){
         g = gcd(ans, arr[i]); 
-        ans = ((ans * arr[i]) / g) 
+        ans = Math.floor((ans * arr[i]) / g) 
     }
     return ans;
 }
